@@ -229,12 +229,13 @@ Point px0 at a machine you can ssh into, the way you would with `scp`, and it ru
 px0 vm:~/work/repo                    # ssh alias or hostname, path relative to the login directory
 px0 deploy@10.0.0.7:/srv/app          # user@host and an absolute path
 px0 build-box:repo/main.go:42         # a file and line, opened on arrival
-px0 ssh://me@vm:2222/srv/app          # non-standard ssh port
 ```
+
+Anything ssh itself needs, such as a non-standard port, an identity file or a jump host, goes in `~/.ssh/config` for that host.
 
 px0 starts on the remote bound to loopback and asks the ssh client to forward that port to `127.0.0.1` here (`-port` picks the local end, `7777` by default). Nothing is exposed on the remote's network, the authentication is whatever your ssh already does (keys, agents, `~/.ssh/config` aliases, jump hosts), and because the browser reaches the page by IP address, Edit with Agent keeps working: the coding harness runs on the remote, where the code is. Ctrl-C locally stops both ends; a dropped connection stops the remote px0 too.
 
-If px0 is not installed on the remote, you are asked before it is put in `~/.local/bin` there: a copy of your own binary when the remote runs the same OS and architecture, otherwise the release for its platform through `install.sh`. `-no-lsp`, `-no-git`, `-agent`, `-no-agent`, `-no-telemetry` and `-verbose` are passed through to the remote px0. The remote needs a POSIX `sh`; the local side needs the `ssh` client on `PATH`. A target that exists locally is always opened locally, even if its name contains a colon.
+If px0 is not installed on the remote, you are asked before it is put in `~/.local/bin` there. The remote always receives the same version you are running: a copy of your own binary when the platforms match, otherwise that version's release for the remote's platform, downloaded here and checksum-verified, so the remote needs no internet access. `-no-lsp`, `-no-git`, `-agent`, `-no-agent`, `-no-telemetry` and `-verbose` are passed through to the remote px0. The remote needs a POSIX `sh`; the local side needs the `ssh` client on `PATH`. A target that exists locally is always opened locally, even if its name contains a colon.
 
 #### Serving on a network yourself
 
